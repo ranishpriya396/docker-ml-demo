@@ -8,11 +8,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
 
-# Load dataset
+# Load data
 df = pd.read_csv("data/laptop_data.csv")
 
-# Features and target
-X = df.drop("Price_USD", axis=1)
+# Remove ID and target column
+X = df.drop(["ID", "Price_USD"], axis=1)
 y = df["Price_USD"]
 
 # Categorical columns
@@ -33,10 +33,10 @@ preprocessor = ColumnTransformer(
     remainder="passthrough"
 )
 
-# Pipeline
+# Model pipeline
 model = Pipeline([
     ("preprocessor", preprocessor),
-    ("regressor", RandomForestRegressor(
+    ("model", RandomForestRegressor(
         n_estimators=100,
         random_state=42
     ))
@@ -54,13 +54,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 model.fit(X_train, y_train)
 
 # Evaluate
-y_pred = model.predict(X_test)
+predictions = model.predict(X_test)
 
-score = r2_score(y_test, y_pred)
+score = r2_score(y_test, predictions)
 
 print(f"R2 Score: {score:.2f}")
 
 # Save model
 joblib.dump(model, "models/model.pkl")
 
-print("Model saved successfully!")
+print("Model Saved Successfully")
